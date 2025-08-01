@@ -1439,6 +1439,37 @@
             }
         }
 
+        // Typewriter sound effect
+        function playTypewriterSound() {
+            // Multiple frequencies to simulate mechanical typewriter
+            const frequencies = [800, 600, 700, 650];
+            const frequency = frequencies[Math.floor(Math.random() * frequencies.length)];
+            playSystemSound(frequency, 30, 0.08);
+        }
+
+        // Setup typewriter sound for all input fields
+        function setupTypewriterSounds() {
+            // Select all input fields and textareas
+            const inputElements = document.querySelectorAll('input[type="text"], textarea');
+            
+            inputElements.forEach(input => {
+                let lastKeyTime = 0;
+                
+                input.addEventListener('keydown', (e) => {
+                    // Only play sound for printable characters and backspace
+                    const isPrintable = e.key.length === 1 || e.key === 'Backspace';
+                    if (!isPrintable) return;
+                    
+                    // Throttle sounds to prevent overlap
+                    const currentTime = Date.now();
+                    if (currentTime - lastKeyTime < 50) return;
+                    lastKeyTime = currentTime;
+                    
+                    playTypewriterSound();
+                });
+            });
+        }
+
         function getCurrentTimestamp() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -1985,6 +2016,9 @@
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 Scrollback HCI Timeline loaded and ready!');
+            
+            // Setup typewriter sounds for all input fields
+            setupTypewriterSounds();
             
             // Set up intersection observer for era tracking
             const sections = document.querySelectorAll('.era-section');
